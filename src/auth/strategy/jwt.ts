@@ -12,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-strategy') {
     });
   }
 
-  async validate(payload: { sub: number }) {
+  public async validate(payload: { sub: number }) {
     const user = await this.db.user.findUnique({
       where: {
         id: payload.sub,

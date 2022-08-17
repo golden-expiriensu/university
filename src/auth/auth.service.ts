@@ -10,7 +10,7 @@ import { AuthDto } from './dto';
 export class AuthService {
   constructor(private db: DBAccessService, private jwt: JwtService) {}
 
-  async signin(dto: AuthDto): Promise<string> {
+  public async signin(dto: AuthDto): Promise<string> {
     const user = await this.db.user.findUnique({
       where: {
         ...this.parseLogin(dto.login),
@@ -23,7 +23,7 @@ export class AuthService {
     return this.generateAccessToken(user.id);
   }
 
-  generateAccessToken(userId: number): Promise<string> {
+  public generateAccessToken(userId: number): Promise<string> {
     const payload = {
       sub: userId,
     };

@@ -9,7 +9,7 @@ import { CreateUserDto } from './dto';
 export class UserService {
   constructor(private db: DBAccessService, private authService: AuthService) {}
 
-  async create(dto: CreateUserDto) {
+  public async create(dto: CreateUserDto) {
     try {
       dto.password = await argon.hash(dto.password);
       const { id } = await this.db.user.create({

@@ -11,13 +11,13 @@ export class UserController {
   constructor(private service: UserService) {}
 
   @Post('create')
-  async create(@Body() dto: CreateUserDto) {
+  public async create(@Body() dto: CreateUserDto) {
     return this.service.create(dto);
   }
 
-  @UseGuards(AuthGuard)
   @Get('me')
-  me(@GetUser() user: User) {
+  @UseGuards(AuthGuard)
+  public me(@GetUser() user: User) {
     delete user.password;
     return { user };
   }

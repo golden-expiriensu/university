@@ -7,16 +7,16 @@ import { AuthDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private service: AuthService, private userService: UserService) {}
-    
-    @Post("signup")
-    async signup(@Body() dto: CreateUserDto) {
-        return this.userService.create(dto);
-    }
+  constructor(private service: AuthService, private userService: UserService) {}
 
-    @HttpCode(HttpStatus.OK)
-    @Post("signin")
-    async signin(@Body() dto: AuthDto) {
-        return this.service.signin(dto);
-    }
+  @Post('signup')
+  public async signup(@Body() dto: CreateUserDto) {
+    return this.userService.create(dto);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('signin')
+  public async signin(@Body() dto: AuthDto) {
+    return this.service.signin(dto);
+  }
 }
