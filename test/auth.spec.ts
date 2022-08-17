@@ -71,7 +71,7 @@ describe('Authorization tests', () => {
         .post(signupUriPostfix)
         .withBody({ ...user })
         .expectStatus(HttpStatus.CREATED)
-        .stores('aliceAccessToken', resBody);
+        .stores('accessToken', resBody);
     });
   });
 
@@ -145,7 +145,7 @@ describe('Authorization tests', () => {
         .spec()
         .get(getMetUriPostfix)
         .withHeaders({
-          Authorization: 'Bearer $S{aliceAccessToken}',
+          Authorization: 'Bearer $S{accessToken}',
         })
         .expectStatus(HttpStatus.OK);
     });
@@ -161,7 +161,7 @@ describe('Authorization tests', () => {
         .spec()
         .get(getMetUriPostfix)
         .withHeaders({
-          Authorization: 'Bearer $S{aliceAccessToken}',
+          Authorization: 'Bearer $S{accessToken}',
         })
         .expectStatus(HttpStatus.UNAUTHORIZED);
     });
