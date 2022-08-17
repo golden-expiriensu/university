@@ -14,8 +14,8 @@ enum Sex {
 
 model User {
   id          Int       @id @default(autoincrement())
-  name        String    @unique
-  email       String?   @unique
+  email       String    @unique
+  name        String?   @unique
   phone       String?   @unique
   password    String
   dateOfBirth DateTime?
