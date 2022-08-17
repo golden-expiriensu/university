@@ -1,13 +1,13 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
 import { DBAccessService } from 'src/db-access/db-access.service';
 
 import { AuthDto } from './dto';
-import { JwtStrategy } from './strategy';
 
 @Injectable()
 export class AuthService {
-  constructor(private validation: JwtStrategy, private db: DBAccessService) {}
+  constructor(private db: DBAccessService, private jwt: JwtService) {}
 
   async signin(dto: AuthDto) {
     const user = await this.db.user.findUnique({
@@ -26,6 +26,10 @@ export class AuthService {
     const payload = {
       sub: userId,
     };
-    return this.validation.sign(payload);
+
+    return this.jwt.signAsync(payload, {
+      expiresIn: '7d',
+      secret: process.env.JWT_SECRET,
+    });
   }
 }

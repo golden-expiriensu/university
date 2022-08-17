@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { DBAccessService } from 'src/db-access/db-access.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-strategy') {
-  constructor(private jwt: JwtService, private db: DBAccessService) {
+  constructor(private db: DBAccessService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: process.env.JWT_SECRET,
@@ -22,12 +21,5 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-strategy') {
 
     delete user.password;
     return user;
-  }
-
-  async sign(payload: { sub: number }): Promise<string> {
-    return await this.jwt.signAsync(payload, {
-      expiresIn: '7d',
-      secret: process.env.JWT_SECRET,
-    });
   }
 }
