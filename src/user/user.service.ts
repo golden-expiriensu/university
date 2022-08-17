@@ -1,9 +1,10 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as argon from 'argon2';
 import { AuthService } from 'src/auth/auth.service';
 import { DBAccessService } from 'src/db-access/db-access.service';
 
 import { CreateUserDto } from './dto';
+import { LoginIsOccupied } from './error';
 
 @Injectable()
 export class UserService {
@@ -22,7 +23,7 @@ export class UserService {
         DBAccessService.isClientKnownRequestError(error) &&
         DBAccessService.errorCodes().duplicateField === error.code
       ) {
-        throw new ForbiddenException('Login is occupied');
+        throw new LoginIsOccupied();
       } else {
         throw error;
       }
