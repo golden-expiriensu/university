@@ -8,6 +8,7 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "prisma:init": "pnpm dotenv -e .env.dev -- prisma migrate dev --name init",
+    "prisma:migrate": "pnpm dotenv -e .env.dev -- prisma migrate dev",
     "db:dev:docker": "dotenv -e .env.dev -- docker-compose rm -fsv dev-db && dotenv -e .env.dev -- docker-compose up -d dev-db",
     "db:dev:prisma": "dotenv -e .env.dev -- prisma migrate deploy",
     "db:dev:restart": "pnpm db:dev:docker && pnpm db:dev:prisma",
