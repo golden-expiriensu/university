@@ -7,11 +7,10 @@
   "scripts": {
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start:dev": "nest start --watch",
     "db:dev:docker": "dotenv -e .env.dev -- docker-compose rm -fsv dev-db && dotenv -e .env.dev -- docker-compose up -d dev-db",
     "db:dev:prisma": "dotenv -e .env.dev -- prisma migrate deploy",
     "db:dev:restart": "pnpm db:dev:docker && pnpm db:dev:prisma",
-    "dev:start": "pnpm dev:db:restart && nest start --watch",
+    "start:dev": "pnpm db:dev:restart && pnpm dotenv -e .env.dev -- nest start --watch",
     "db:test:docker": "dotenv -e .env.test -- docker-compose rm -fsv test-db && dotenv -e .env.test -- docker-compose up -d test-db",
     "db:test:prisma": "dotenv -e .env.test -- prisma migrate deploy",
     "db:test:restart": "pnpm db:test:docker && pnpm db:test:prisma",
