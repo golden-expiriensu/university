@@ -16,13 +16,13 @@ export class UserService {
         data: { ...dto },
       });
 
-      return this.authService.generateToken(id);
+      return this.authService.generateAccessToken(id);
     } catch (error) {
       if (
         DBAccessService.isClientKnownRequestError(error) &&
         DBAccessService.errorCodes().duplicateField === error.code
       ) {
-        throw new ForbiddenException('AlreadyExist');
+        throw new ForbiddenException('Login is occupied');
       } else {
         throw error;
       }
