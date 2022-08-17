@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { AuthGuard } from 'src/auth/guard';
+import { JwtGuard } from 'src/auth/guard';
 
 import { GetUser } from './decorator';
 import { CreateUserDto } from './dto';
@@ -16,7 +16,7 @@ export class UserController {
   }
 
   @Get('me')
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtGuard)
   public me(@GetUser() user: User) {
     delete user.password;
     return { user };
