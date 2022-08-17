@@ -1,21 +1,15 @@
-import {
-  IsDate,
-  IsNotEmpty,
-  IsOptional,
-  IsPhoneNumber,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 import { Sex } from '.';
 
 export class EditUserDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   name?: string;
   @IsOptional()
   @IsPhoneNumber()
   phone?: string;
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   password?: string;
   @IsOptional()

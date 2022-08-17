@@ -1,4 +1,11 @@
-import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
 
 import { Sex } from '.';
 
