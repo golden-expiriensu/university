@@ -14,6 +14,11 @@ export class DBAccessService extends PrismaClient {
     });
   }
 
+  // TODO: how to substitute in tests?
+  public async clear(): Promise<void> {
+    await this.user.deleteMany();
+  }
+
   public static errorCodes = () => {
     return { duplicateField: 'P2002' };
   };

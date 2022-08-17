@@ -30,6 +30,7 @@ export class UserService {
     }
   }
 
+  // TODO: check how unique fields will be handled in case it already occupied (maybe need to add try catch)
   public async edit(id: number, dto: EditUserDto): Promise<void> {
     await this.db.user.update({
       where: { id },
