@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsDate, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 import { Sex } from '.';
@@ -13,6 +14,7 @@ export class EditUserDto {
   @IsString()
   password?: string;
   @IsOptional()
+  @Type(() => Date)
   @IsDate()
   dateOfBirth?: string;
   @IsOptional()

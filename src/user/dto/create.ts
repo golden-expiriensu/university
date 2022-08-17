@@ -1,11 +1,5 @@
-import {
-  IsDate,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsPhoneNumber,
-  IsString,
-} from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 import { Sex } from '.';
 
@@ -23,6 +17,7 @@ export class CreateUserDto {
   @IsString()
   password: string;
   @IsOptional()
+  @Type(() => Date)
   @IsDate()
   dateOfBirth?: string;
   @IsOptional()
