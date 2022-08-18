@@ -10,6 +10,7 @@ describe('Authorization tests', () => {
   let app: INestApplication;
   let db: DBAccessService;
 
+  const accessTokenKey = "accessToken";
   const resBody = 'res.body';
 
   const createUriPostfix = '/user/create';
@@ -74,7 +75,7 @@ describe('Authorization tests', () => {
         .post(createUriPostfix)
         .withBody({ ...user })
         .expectStatus(HttpStatus.CREATED)
-        .stores('accessToken', resBody);
+        .stores(accessTokenKey, resBody);
     });
 
     it('4: Should forbid to create user with duplicate email', async () => {
@@ -143,7 +144,7 @@ describe('Authorization tests', () => {
             phone: occupiedPhone,
           })
           .withHeaders({
-            Authorization: 'Bearer $S{accessToken}',
+            Authorization: `Bearer $S{${accessTokenKey}}`,
           })
           .expectStatus(HttpStatus.FORBIDDEN),
         pactum
@@ -153,7 +154,7 @@ describe('Authorization tests', () => {
             name: occupiedName,
           })
           .withHeaders({
-            Authorization: 'Bearer $S{accessToken}',
+            Authorization: `Bearer $S{${accessTokenKey}}`,
           })
           .expectStatus(HttpStatus.FORBIDDEN),
       ]);
@@ -167,7 +168,7 @@ describe('Authorization tests', () => {
           ...editedUser,
         })
         .withHeaders({
-          Authorization: 'Bearer $S{accessToken}',
+          Authorization: `Bearer $S{${accessTokenKey}}`,
         })
         .expectStatus(HttpStatus.ACCEPTED);
     });
@@ -188,7 +189,7 @@ describe('Authorization tests', () => {
         .spec()
         .get(meUriPostfix)
         .withHeaders({
-          Authorization: 'Bearer $S{accessToken}',
+          Authorization: `Bearer $S{${accessTokenKey}}`,
         })
         .expectStatus(HttpStatus.OK)
         .expectBodyContains(editedUser.email)

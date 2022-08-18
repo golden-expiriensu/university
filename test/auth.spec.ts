@@ -10,6 +10,7 @@ describe('Authorization tests', () => {
   let app: INestApplication;
   let db: DBAccessService;
 
+  const accessTokenKey = 'accessToken'
   const resBody = 'res.body';
 
   const user = {
@@ -71,7 +72,7 @@ describe('Authorization tests', () => {
         .post(signupUriPostfix)
         .withBody({ ...user })
         .expectStatus(HttpStatus.CREATED)
-        .stores('accessToken', resBody);
+        .stores(accessTokenKey, resBody);
     });
   });
 
@@ -145,7 +146,7 @@ describe('Authorization tests', () => {
         .spec()
         .get(getMetUriPostfix)
         .withHeaders({
-          Authorization: 'Bearer $S{accessToken}',
+          Authorization: `Bearer $S{${accessTokenKey}}`,
         })
         .expectStatus(HttpStatus.OK);
     });
@@ -161,7 +162,7 @@ describe('Authorization tests', () => {
         .spec()
         .get(getMetUriPostfix)
         .withHeaders({
-          Authorization: 'Bearer $S{accessToken}',
+          Authorization: `Bearer $S{${accessTokenKey}}`,
         })
         .expectStatus(HttpStatus.UNAUTHORIZED);
     });
