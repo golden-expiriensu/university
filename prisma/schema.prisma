@@ -45,6 +45,8 @@ model Performance {
   studentId Int
   teacher   Profile @relation(name: "MadeGrades", fields: [teacherId], references: [id])
   teacherId Int
+  grade     Int
+  lesson    Int
 
   @@map("performances")
 }
