@@ -4,13 +4,16 @@ import * as pactum from 'pactum';
 import { AppModule } from 'src/app.module';
 import { DBAccessService } from 'src/db-access/db-access.service';
 
-const port = 3000;
+const port = 3001;
 
 describe('Authorization tests', () => {
   let app: INestApplication;
   let db: DBAccessService;
 
   const resBody = 'res.body';
+
+  const createUriPostfix = '/user/create';
+  const editUriPostfix = '/user/edit';
 
   const user = {
     email: 'alice00@example.com',
@@ -49,8 +52,6 @@ describe('Authorization tests', () => {
   });
 
   describe('Create', () => {
-    const createUriPostfix = '/user/create';
-
     it('1: Should forbid to create user with no email', async () => {
       return pactum
         .spec()
@@ -110,8 +111,6 @@ describe('Authorization tests', () => {
   });
 
   describe('Edit', () => {
-    const editUriPostfix = '/user/edit';
-
     it('1: Shoul forbid to edit without authorization', async () => {
       return pactum
         .spec()
@@ -119,7 +118,48 @@ describe('Authorization tests', () => {
         .expectStatus(HttpStatus.UNAUTHORIZED);
     });
 
-    it('2: Should allow to edit user', async () => {
+    it('2: Should forbid to edit if unique field already occupied', async () => {
+      const occupiedPhone = '+78887776655';
+      const occupiedName = 'coolName';
+
+      await Promise.all([
+        pactum
+          .spec()
+          .post(createUriPostfix)
+          .withBody({
+            email: 'email@example.com',
+            phone: occupiedPhone,
+            name: occupiedName,
+            password: '123',
+          })
+          .expectStatus(HttpStatus.CREATED),
+      ]);
+
+      return Promise.all([
+        pactum
+          .spec()
+          .patch(editUriPostfix)
+          .withBody({
+            phone: occupiedPhone,
+          })
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .expectStatus(HttpStatus.FORBIDDEN),
+        pactum
+          .spec()
+          .patch(editUriPostfix)
+          .withBody({
+            name: occupiedName,
+          })
+          .withHeaders({
+            Authorization: 'Bearer $S{accessToken}',
+          })
+          .expectStatus(HttpStatus.FORBIDDEN),
+      ]);
+    });
+
+    it('3: Should allow to edit user', async () => {
       return pactum
         .spec()
         .patch(editUriPostfix)
