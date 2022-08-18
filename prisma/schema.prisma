@@ -32,7 +32,7 @@ model Profile {
   userId       Int
   faculty      String
   university   String
-  group        String?
+  group        Int?
   gottenGrades Performance[] @relation("GottenGrades")
   madeGrades   Performance[] @relation("MadeGrades")
 
