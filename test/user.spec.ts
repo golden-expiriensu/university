@@ -4,9 +4,9 @@ import * as pactum from 'pactum';
 import { AppModule } from 'src/app.module';
 import { DBAccessService } from 'src/db-access/db-access.service';
 
-const port = 3001;
+const port = 3000;
 
-describe('Authorization tests', () => {
+describe('User module tests', () => {
   let app: INestApplication;
   let db: DBAccessService;
 
