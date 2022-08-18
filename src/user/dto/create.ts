@@ -1,7 +1,10 @@
 import { Type } from 'class-transformer';
 import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
-import { Sex } from '.';
+export enum Sex {
+  Male = 'MALE',
+  Female = 'FEMALE',
+}
 
 export class CreateUserDto {
   @IsNotEmpty()

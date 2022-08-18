@@ -1,23 +1,7 @@
-import { Type } from 'class-transformer';
-import { IsDate, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 
-import { Sex } from '.';
+import { CreateUserDto } from '.';
 
-export class EditUserDto {
-  @IsOptional()
-  @IsString()
-  name?: string;
-  @IsOptional()
-  @IsPhoneNumber()
-  phone?: string;
-  @IsOptional()
-  @IsString()
-  password?: string;
-  @IsOptional()
-  @Type(() => Date)
-  @IsDate()
-  dateOfBirth?: string;
-  @IsOptional()
-  @IsString()
-  sex?: Sex;
-}
+export class EditUserDto extends PartialType(
+  OmitType(CreateUserDto, ['email']),
+) {}
