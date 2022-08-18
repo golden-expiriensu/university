@@ -19,22 +19,29 @@ export class UserService {
 
       return this.authService.generateAccessToken(id);
     } catch (error) {
-      if (
-        DBAccessService.isClientKnownRequestError(error) &&
-        DBAccessService.errorCodes().duplicateField === error.code
-      ) {
-        throw new LoginIsOccupied();
-      } else {
-        throw error;
-      }
+      this.handleDBError(error);
     }
   }
 
-  // TODO: check how unique fields will be handled in case it already occupied (maybe need to add try catch)
   public async edit(id: number, dto: EditUserDto): Promise<void> {
-    await this.db.user.update({
-      where: { id },
-      data: { ...dto },
-    });
+    try {
+      await this.db.user.update({
+        where: { id },
+        data: { ...dto },
+      });
+    } catch (error) {
+      this.handleDBError(error);
+    }
+  }
+
+  private handleDBError(error: any) {
+    if (
+      DBAccessService.isClientKnownRequestError(error) &&
+      DBAccessService.errorCodes().duplicateField === error.code
+    ) {
+      throw new LoginIsOccupied();
+    } else {
+      throw error;
+    }
   }
 }
