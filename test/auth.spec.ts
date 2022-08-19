@@ -10,8 +10,14 @@ describe('Authorization tests', () => {
   let app: INestApplication;
   let db: DBAccessService;
 
-  const accessTokenKey = 'accessToken'
+  const accessTokenKey = 'accessToken';
   const resBody = 'res.body';
+
+  const uriPath = {
+    signup: '/auth/signup',
+    signin: '/auth/signin',
+    getMe: '/user/me',
+  };
 
   const user = {
     email: 'alice89@example.com',
@@ -41,12 +47,10 @@ describe('Authorization tests', () => {
   });
 
   describe('Signup', () => {
-    const signupUriPostfix = '/auth/signup';
-
     it('1: Should forbid to signup without password', async () => {
       return pactum
         .spec()
-        .post(signupUriPostfix)
+        .post(uriPath.signup)
         .withBody({ email: user.email })
         .expectStatus(HttpStatus.BAD_REQUEST);
     });
@@ -54,7 +58,7 @@ describe('Authorization tests', () => {
     it('2: Should forbid to signup without email', async () => {
       return pactum
         .spec()
-        .post(signupUriPostfix)
+        .post(uriPath.signup)
         .withBody({ password: user.password })
         .expectStatus(HttpStatus.BAD_REQUEST);
     });
@@ -62,14 +66,14 @@ describe('Authorization tests', () => {
     it('3: Should forbid to signup without body data', async () => {
       return pactum
         .spec()
-        .post(signupUriPostfix)
+        .post(uriPath.signup)
         .expectStatus(HttpStatus.BAD_REQUEST);
     });
 
     it('4: Should allow to signup', async () => {
       return pactum
         .spec()
-        .post(signupUriPostfix)
+        .post(uriPath.signup)
         .withBody({ ...user })
         .expectStatus(HttpStatus.CREATED)
         .stores(accessTokenKey, resBody);
@@ -77,12 +81,10 @@ describe('Authorization tests', () => {
   });
 
   describe('Signin', () => {
-    const signinUriPostfix = '/auth/signin';
-
     it('1: Should fail to sigin with no password', async () => {
       return pactum
         .spec()
-        .post(signinUriPostfix)
+        .post(uriPath.signin)
         .withBody({ login: user.email })
         .expectStatus(HttpStatus.BAD_REQUEST);
     });
@@ -90,7 +92,7 @@ describe('Authorization tests', () => {
     it('2: Should fail to signin without login', async () => {
       return pactum
         .spec()
-        .post(signinUriPostfix)
+        .post(uriPath.signin)
         .withBody({ password: user.password })
         .expectStatus(HttpStatus.BAD_REQUEST);
     });
@@ -98,7 +100,7 @@ describe('Authorization tests', () => {
     it('3: Should fail to signin with wrong password', async () => {
       return pactum
         .spec()
-        .post(signinUriPostfix)
+        .post(uriPath.signin)
         .withBody({
           login: user.email,
           password: 'I am a wrong password',
@@ -109,7 +111,7 @@ describe('Authorization tests', () => {
     it('4: Should success to signin with email', async () => {
       return pactum
         .spec()
-        .post(signinUriPostfix)
+        .post(uriPath.signin)
         .withBody({ login: user.email, password: user.password })
         .expectStatus(HttpStatus.OK);
     });
@@ -117,7 +119,7 @@ describe('Authorization tests', () => {
     it('5: Should success to signin with name', async () => {
       return pactum
         .spec()
-        .post(signinUriPostfix)
+        .post(uriPath.signin)
         .withBody({ login: user.name, password: user.password })
         .expectStatus(HttpStatus.OK);
     });
@@ -125,26 +127,24 @@ describe('Authorization tests', () => {
     it('6: Should success to signin with phone', async () => {
       return pactum
         .spec()
-        .post(signinUriPostfix)
+        .post(uriPath.signin)
         .withBody({ login: user.phone, password: user.password })
         .expectStatus(HttpStatus.OK);
     });
   });
 
   describe('Access token check', () => {
-    const getMetUriPostfix = '/user/me';
-
     it('1: Should fail to get/me with bad access token', async () => {
       return pactum
         .spec()
-        .get(getMetUriPostfix)
+        .get(uriPath.getMe)
         .expectStatus(HttpStatus.UNAUTHORIZED);
     });
 
     it('2: Should success to get/me with right access token', async () => {
       return pactum
         .spec()
-        .get(getMetUriPostfix)
+        .get(uriPath.getMe)
         .withHeaders({
           Authorization: `Bearer $S{${accessTokenKey}}`,
         })
@@ -160,7 +160,7 @@ describe('Authorization tests', () => {
 
       return pactum
         .spec()
-        .get(getMetUriPostfix)
+        .get(uriPath.getMe)
         .withHeaders({
           Authorization: `Bearer $S{${accessTokenKey}}`,
         })

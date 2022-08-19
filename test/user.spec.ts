@@ -13,8 +13,10 @@ describe('User module tests', () => {
   const accessTokenKey = "accessToken";
   const resBody = 'res.body';
 
-  const createUriPostfix = '/user/create';
-  const editUriPostfix = '/user/edit';
+  const uriPath = {
+    create: '/user/create',
+    edit: '/user/edit'
+  }
 
   const user = {
     email: 'alice00@example.com',
@@ -56,7 +58,7 @@ describe('User module tests', () => {
     it('1: Should forbid to create user with no email', async () => {
       return pactum
         .spec()
-        .post(createUriPostfix)
+        .post(uriPath.create)
         .withBody({ password: user.password })
         .expectStatus(HttpStatus.BAD_REQUEST);
     });
@@ -64,7 +66,7 @@ describe('User module tests', () => {
     it('2: Should forbid to create user with no password', async () => {
       return pactum
         .spec()
-        .post(createUriPostfix)
+        .post(uriPath.create)
         .withBody({ email: user.email })
         .expectStatus(HttpStatus.BAD_REQUEST);
     });
@@ -72,7 +74,7 @@ describe('User module tests', () => {
     it('3: Should allow to create user', async () => {
       return pactum
         .spec()
-        .post(createUriPostfix)
+        .post(uriPath.create)
         .withBody({ ...user })
         .expectStatus(HttpStatus.CREATED)
         .stores(accessTokenKey, resBody);
@@ -81,7 +83,7 @@ describe('User module tests', () => {
     it('4: Should forbid to create user with duplicate email', async () => {
       return pactum
         .spec()
-        .post(createUriPostfix)
+        .post(uriPath.create)
         .withBody({ email: user.email, password: user.password })
         .expectStatus(HttpStatus.FORBIDDEN);
     });
@@ -89,7 +91,7 @@ describe('User module tests', () => {
     it('5: Should forbid to create user with duplicate name', async () => {
       return pactum
         .spec()
-        .post(createUriPostfix)
+        .post(uriPath.create)
         .withBody({
           email: 'unique@email.com',
           name: user.name,
@@ -101,7 +103,7 @@ describe('User module tests', () => {
     it('6: Should forbid to create user with duplicate phone', async () => {
       return pactum
         .spec()
-        .post(createUriPostfix)
+        .post(uriPath.create)
         .withBody({
           email: 'unique@email.com',
           phone: user.phone,
@@ -115,7 +117,7 @@ describe('User module tests', () => {
     it('1: Shoul forbid to edit without authorization', async () => {
       return pactum
         .spec()
-        .patch(editUriPostfix)
+        .patch(uriPath.edit)
         .expectStatus(HttpStatus.UNAUTHORIZED);
     });
 
@@ -126,7 +128,7 @@ describe('User module tests', () => {
       await Promise.all([
         pactum
           .spec()
-          .post(createUriPostfix)
+          .post(uriPath.create)
           .withBody({
             email: 'email@example.com',
             phone: occupiedPhone,
@@ -139,7 +141,7 @@ describe('User module tests', () => {
       return Promise.all([
         pactum
           .spec()
-          .patch(editUriPostfix)
+          .patch(uriPath.edit)
           .withBody({
             phone: occupiedPhone,
           })
@@ -149,7 +151,7 @@ describe('User module tests', () => {
           .expectStatus(HttpStatus.FORBIDDEN),
         pactum
           .spec()
-          .patch(editUriPostfix)
+          .patch(uriPath.edit)
           .withBody({
             name: occupiedName,
           })
@@ -163,7 +165,7 @@ describe('User module tests', () => {
     it('3: Should allow to edit user', async () => {
       return pactum
         .spec()
-        .patch(editUriPostfix)
+        .patch(uriPath.edit)
         .withBody({
           ...editedUser,
         })
