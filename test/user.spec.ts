@@ -11,6 +11,7 @@ describe('User module tests', () => {
   let db: DBAccessService;
 
   const accessTokenKey = "accessToken";
+  const bearerAuth = { Authorization: `Bearer $S{${accessTokenKey}}` };
   const resBody = 'res.body';
 
   const uriPath = {
@@ -145,9 +146,7 @@ describe('User module tests', () => {
           .withBody({
             phone: occupiedPhone,
           })
-          .withHeaders({
-            Authorization: `Bearer $S{${accessTokenKey}}`,
-          })
+          .withHeaders(bearerAuth)
           .expectStatus(HttpStatus.FORBIDDEN),
         pactum
           .spec()
@@ -155,9 +154,7 @@ describe('User module tests', () => {
           .withBody({
             name: occupiedName,
           })
-          .withHeaders({
-            Authorization: `Bearer $S{${accessTokenKey}}`,
-          })
+          .withHeaders(bearerAuth)
           .expectStatus(HttpStatus.FORBIDDEN),
       ]);
     });
@@ -169,9 +166,7 @@ describe('User module tests', () => {
         .withBody({
           ...editedUser,
         })
-        .withHeaders({
-          Authorization: `Bearer $S{${accessTokenKey}}`,
-        })
+        .withHeaders(bearerAuth)
         .expectStatus(HttpStatus.ACCEPTED);
     });
   });
@@ -190,9 +185,7 @@ describe('User module tests', () => {
       return pactum
         .spec()
         .get(meUriPostfix)
-        .withHeaders({
-          Authorization: `Bearer $S{${accessTokenKey}}`,
-        })
+        .withHeaders(bearerAuth)
         .expectStatus(HttpStatus.OK)
         .expectBodyContains(editedUser.email)
         .expectBodyContains(editedUser.name)

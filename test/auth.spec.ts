@@ -11,6 +11,7 @@ describe('Authorization tests', () => {
   let db: DBAccessService;
 
   const accessTokenKey = 'accessToken';
+  const bearerAuth = { Authorization: `Bearer $S{${accessTokenKey}}` };
   const resBody = 'res.body';
 
   const uriPath = {
@@ -145,9 +146,7 @@ describe('Authorization tests', () => {
       return pactum
         .spec()
         .get(uriPath.getMe)
-        .withHeaders({
-          Authorization: `Bearer $S{${accessTokenKey}}`,
-        })
+        .withHeaders(bearerAuth)
         .expectStatus(HttpStatus.OK);
     });
 
@@ -161,9 +160,7 @@ describe('Authorization tests', () => {
       return pactum
         .spec()
         .get(uriPath.getMe)
-        .withHeaders({
-          Authorization: `Bearer $S{${accessTokenKey}}`,
-        })
+        .withHeaders(bearerAuth)
         .expectStatus(HttpStatus.UNAUTHORIZED);
     });
   });
