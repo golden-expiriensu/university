@@ -37,9 +37,12 @@ export class PerformanceService {
     });
   }
 
-  public async getMyGradesByLesson(dto: { lesson: number }): Promise<number[]> {
+  public async getProfileGradesByLesson(dto: {
+    profileId: number;
+    lesson: number;
+  }): Promise<number[]> {
     const response = await this.getGrades({
-      where: { gottenGrades: { lesson: dto.lesson } },
+      where: { gottenGrades: { lesson: dto.lesson }, id: dto.profileId },
     });
 
     return response
@@ -48,10 +51,11 @@ export class PerformanceService {
       .map((e) => e.grade);
   }
 
-  public async getMyAverageGradeByLesson(dto: {
+  public async getProfileAverageGradeByLesson(dto: {
+    profileId: number;
     lesson: number;
   }): Promise<number> {
-    const grades = await this.getMyGradesByLesson(dto);
+    const grades = await this.getProfileGradesByLesson(dto);
     return grades.reduce((t, c) => t + c, 0) / grades.length;
   }
 

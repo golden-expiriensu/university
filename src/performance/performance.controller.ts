@@ -27,15 +27,17 @@ export class PerformanceController {
   }
 
   @Get('get/my')
-  public getMyGradesByLesson(@Body() dto: { lesson: number }): Promise<number> {
-    return null;
+  public getMyGradesByLesson(
+    @Body() dto: { profileId: number; lesson: number },
+  ): Promise<number[]> {
+    return this.service.getProfileGradesByLesson(dto);
   }
 
   @Get('get/my/average-by-lesson')
   public getMyAverageGradeByLesson(
-    @Body() dto: { lesson: number },
+    @Body() dto: { profileId: number; lesson: number },
   ): Promise<number> {
-    return null;
+    return this.service.getProfileAverageGradeByLesson(dto);
   }
 
   @Get('get/average-by-student')
