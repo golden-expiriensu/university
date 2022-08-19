@@ -16,7 +16,10 @@ export class DBAccessService extends PrismaClient {
 
   // TODO: how to substitute in tests?
   public async clear(): Promise<void> {
-    await this.user.deleteMany();
+    await this.$transaction([
+      this.profile.deleteMany(),
+      this.user.deleteMany(),
+    ])
   }
 
   public static errorCodes = () => {
