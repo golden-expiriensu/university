@@ -9,13 +9,15 @@ import { NotProfileOwnerException, ProfileNotFoundException } from './error';
 export class ProfileService {
   constructor(private db: DBAccessService) {}
 
-  public create(userId: number, dto: CreateProfileDto): Promise<Profile> {
-    return this.db.profile.create({
-      data: {
-        userId,
-        ...dto,
-      },
-    });
+  public async create(userId: number, dto: CreateProfileDto): Promise<number> {
+    return (
+      await this.db.profile.create({
+        data: {
+          userId,
+          ...dto,
+        },
+      })
+    ).id;
   }
 
   public async edit(userId: number, dto: EditProfileDto): Promise<Profile> {

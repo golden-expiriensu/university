@@ -1,5 +1,4 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
-import { Profile } from '@prisma/client';
+import { Body, Controller, HttpCode, HttpStatus, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { GetUser } from 'src/user/decorator';
 
@@ -15,10 +14,11 @@ export class ProfileController {
   public async create(
     @GetUser('id') userId: number,
     @Body() dto: CreateProfileDto,
-  ): Promise<Profile> {
+  ): Promise<number> {
     return this.service.create(userId, dto);
   }
 
+  @HttpCode(HttpStatus.ACCEPTED)
   @Patch('edit')
   public async editProfile(
     @GetUser('id') userId: number,
