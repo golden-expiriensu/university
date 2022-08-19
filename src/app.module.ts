@@ -3,8 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 
 import { AuthModule } from './auth/auth.module';
 import { DBAccessModule } from './db-access/db-access.module';
-import { UserModule } from './user/user.module';
+import { PerformanceModule } from './performance/performance.module';
 import { ProfileModule } from './profile/profile.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ProfileModule } from './profile/profile.module';
     AuthModule,
     UserModule,
     ProfileModule,
+    PerformanceModule
   ],
 })
 export class AppModule {}

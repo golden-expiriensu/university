@@ -1,25 +1,15 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DBAccessService } from 'src/db-access/db-access.service';
 
 import { CreateGradeDto, EditGradeDto } from './dto';
 import { DeleteGradeDto } from './dto/deleteGrade';
+import { SelectGradesDBResponse } from './types';
 
 @Injectable()
 export class PerformanceService {
   constructor(private db: DBAccessService) {}
 
-  public async createGrade(
-    userId: number,
-    dto: CreateGradeDto,
-  ): Promise<number> {
-    const { userId: teacherProfileOwner } = await this.db.profile.findUnique({
-      where: {
-        id: dto.teacherId,
-      },
-    });
-    if (teacherProfileOwner !== userId)
-      throw new ForbiddenException('Not profile owner');
-
+  public async createGrade(dto: CreateGradeDto): Promise<number> {
     return (
       await this.db.performance.create({
         data: { ...dto },
@@ -27,15 +17,90 @@ export class PerformanceService {
     ).id;
   }
 
-  public editGrade(userId: number, dto: EditGradeDto): Promise<void> {
-    return null;
+  public async editGrade(dto: EditGradeDto): Promise<void> {
+    await this.db.performance.update({
+      where: {
+        id: dto.id,
+      },
+      data: (() => {
+        delete dto.id;
+        return dto;
+      })(),
+    });
   }
 
-  public deleteGrade(userId: number, dto: DeleteGradeDto): Promise<void> {
-    return null;
+  public async deleteGrade(dto: DeleteGradeDto): Promise<void> {
+    await this.db.performance.delete({
+      where: {
+        id: dto.id,
+      },
+    });
   }
 
-  public getAverageGradeByFaculty(faculty: string): Promise<void> {
-    return null;
+  public async getMyGradesByLesson(dto: { lesson: number }): Promise<number[]> {
+    const response = await this.getGrades({
+      where: { gottenGrades: { lesson: dto.lesson } },
+    });
+
+    return response
+      .map((e) => [...e.gottenGrades])
+      .flat()
+      .map((e) => e.grade);
+  }
+
+  public async getMyAverageGradeByLesson(dto: {
+    lesson: number;
+  }): Promise<number> {
+    const grades = await this.getMyGradesByLesson(dto);
+    return grades.reduce((t, c) => t + c, 0) / grades.length;
+  }
+
+  public async getAverageGradeByStudent(
+    studentProfileId: number,
+  ): Promise<number> {
+    return this.findAverageGrade(
+      await this.getGrades({ where: { userId: studentProfileId } }),
+    );
+  }
+
+  public async getAverageGradeByGroup(group: number): Promise<number> {
+    return this.findAverageGrade(await this.getGrades({ where: { group } }));
+  }
+
+  public async getAverageGradeByFaculty(faculty: string): Promise<number> {
+    return this.findAverageGrade(await this.getGrades({ where: { faculty } }));
+  }
+
+  public async getAverageGradeByUniversity(
+    university: string,
+  ): Promise<number> {
+    return this.findAverageGrade(
+      await this.getGrades({ where: { university } }),
+    );
+  }
+
+  private async findAverageGrade(
+    dbResponse: SelectGradesDBResponse,
+  ): Promise<number> {
+    const flatten = dbResponse.map((e) => e.gottenGrades).flat();
+    return flatten.reduce((t, c) => t + c.grade, 0) / flatten.length;
+  }
+
+  private getGrades(filter: object): Promise<SelectGradesDBResponse> {
+    return this.db.profile.findMany({
+      where: {
+        NOT: {
+          group: null,
+        },
+      },
+      select: {
+        gottenGrades: {
+          select: {
+            grade: true,
+          },
+        },
+      },
+      ...filter,
+    });
   }
 }
