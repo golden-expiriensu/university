@@ -3,15 +3,16 @@ import { JwtGuard } from 'src/auth/guard';
 import { OnlyProfileOwnerGuard, OnlySameFacultyGuard } from 'src/profile/guard';
 
 import {
-  CreateGradeDto,
-  DeleteGradeDto,
-  EditGradeDto,
-  FacultyDto,
-  GroupDto,
-  ProfileIdAndLessonDto,
-  ProfileIdDto,
-  UniversityDto,
+    CreateGradeDto,
+    DeleteGradeDto,
+    EditGradeDto,
+    FacultyDto,
+    GroupDto,
+    ProfileIdAndLessonDto,
+    ProfileIdDto,
+    UniversityDto,
 } from './dto';
+import { OnlyGradeCreatorGuard } from './guard';
 import { PerformanceService } from './performance.service';
 
 @Controller('performance/grade')
@@ -19,17 +20,20 @@ import { PerformanceService } from './performance.service';
 export class PerformanceController {
   constructor(private service: PerformanceService) {}
 
+  @UseGuards(OnlyGradeCreatorGuard)
   @Post('create')
   public createGrade(@Body() dto: CreateGradeDto): Promise<number> {
     return this.service.createGrade(dto);
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
+  @UseGuards(OnlyGradeCreatorGuard)
   @Patch('edit')
   public editGrade(@Body() dto: EditGradeDto): Promise<void> {
     return this.service.editGrade(dto);
   }
 
+  @UseGuards(OnlyGradeCreatorGuard)
   @Delete('delete')
   public deleteGrade(@Body() dto: DeleteGradeDto): Promise<void> {
     return this.service.deleteGrade(dto);
