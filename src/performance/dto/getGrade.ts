@@ -35,9 +35,12 @@ class University {
   university: string;
 }
 
-export class ProfileAndLessonDto extends IntersectionType(ProfileId, Lesson) {}
+export class ProfileIdAndLessonDto extends IntersectionType(
+  ProfileId,
+  Lesson,
+) {}
 
-export class StudentDto extends ProfileId {}
+export class ProfileIdDto extends ProfileId {}
 
 export class GroupDto extends Group {}
 

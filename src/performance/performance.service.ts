@@ -36,27 +36,27 @@ export class PerformanceService {
     });
   }
 
-  public async getProfileGradesByLesson(dto: {
-    profileId: number;
-    lesson: number;
-  }): Promise<number[]> {
+  public async getProfileGradesByLesson(
+    profileId: number,
+    lesson: number,
+  ): Promise<number[]> {
     return this.db.performance
       .findMany({
         where: {
-          lesson: dto.lesson,
+          lesson,
           student: {
-            userId: dto.profileId,
+            userId: profileId,
           },
         },
       })
       .then((a) => a.map((e) => e.grade));
   }
 
-  public async getProfileAverageGradeByLesson(dto: {
-    profileId: number;
-    lesson: number;
-  }): Promise<number> {
-    const grades = await this.getProfileGradesByLesson(dto);
+  public async getProfileAverageGradeByLesson(
+    profileId: number,
+    lesson: number,
+  ): Promise<number> {
+    const grades = await this.getProfileGradesByLesson(profileId, lesson);
     return grades.reduce((t, c) => t + c, 0) / grades.length;
   }
 

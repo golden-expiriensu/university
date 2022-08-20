@@ -1,15 +1,16 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
+import { OnlyProfileOwnerGuard, OnlySameFacultyGuard } from 'src/profile/guard';
 
 import {
-    CreateGradeDto,
-    DeleteGradeDto,
-    EditGradeDto,
-    FacultyDto,
-    GroupDto,
-    ProfileAndLessonDto,
-    StudentDto,
-    UniversityDto,
+  CreateGradeDto,
+  DeleteGradeDto,
+  EditGradeDto,
+  FacultyDto,
+  GroupDto,
+  ProfileIdAndLessonDto,
+  ProfileIdDto,
+  UniversityDto,
 } from './dto';
 import { PerformanceService } from './performance.service';
 
@@ -34,22 +35,27 @@ export class PerformanceController {
     return this.service.deleteGrade(dto);
   }
 
+  @UseGuards(OnlyProfileOwnerGuard)
   @Get('get/my')
   public getMyGradesByLesson(
-    @Body() dto: ProfileAndLessonDto,
+    @Body() dto: ProfileIdAndLessonDto,
   ): Promise<number[]> {
-    return this.service.getProfileGradesByLesson(dto);
+    return this.service.getProfileGradesByLesson(dto.profileId, dto.lesson);
   }
 
+  @UseGuards(OnlyProfileOwnerGuard)
   @Get('get/my/average-by-lesson')
   public getMyAverageGradeByLesson(
-    @Body() dto: ProfileAndLessonDto,
+    @Body() dto: ProfileIdAndLessonDto,
   ): Promise<number> {
-    return this.service.getProfileAverageGradeByLesson(dto);
+    return this.service.getProfileAverageGradeByLesson(
+      dto.profileId,
+      dto.lesson,
+    );
   }
 
   @Get('get/average-by-student')
-  public getAverageGradeByStudent(@Body() dto: StudentDto): Promise<number> {
+  public getAverageGradeByStudent(@Body() dto: ProfileIdDto): Promise<number> {
     return this.service.getAverageGradeByStudent(dto.profileId);
   }
 
@@ -58,6 +64,7 @@ export class PerformanceController {
     return this.service.getAverageGradeByGroup(dto.group);
   }
 
+  @UseGuards(OnlySameFacultyGuard)
   @Get('get/average-by-faculty')
   public getAverageGradeByFaculty(@Body() dto: FacultyDto): Promise<number> {
     return this.service.getAverageGradeByFaculty(dto.faculty);
