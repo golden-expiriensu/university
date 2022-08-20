@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DBAccessService } from 'src/db-access/db-access.service';
 
-import { CreateGradeDto, EditGradeDto } from './dto';
-import { DeleteGradeDto } from './dto/deleteGrade';
+import { CreateGradeDto, DeleteGradeDto, EditGradeDto } from './dto';
 import { SelectGradesDBResponse } from './types';
 
 @Injectable()
@@ -41,14 +40,16 @@ export class PerformanceService {
     profileId: number;
     lesson: number;
   }): Promise<number[]> {
-    const response = await this.getGrades({
-      where: { gottenGrades: { lesson: dto.lesson }, id: dto.profileId },
-    });
-
-    return response
-      .map((e) => [...e.gottenGrades])
-      .flat()
-      .map((e) => e.grade);
+    return this.db.performance
+      .findMany({
+        where: {
+          lesson: dto.lesson,
+          student: {
+            userId: dto.profileId,
+          },
+        },
+      })
+      .then((a) => a.map((e) => e.grade));
   }
 
   public async getProfileAverageGradeByLesson(dto: {
@@ -63,23 +64,29 @@ export class PerformanceService {
     studentProfileId: number,
   ): Promise<number> {
     return this.findAverageGrade(
-      await this.getGrades({ where: { userId: studentProfileId } }),
+      await this.getProfileGottenGrades({
+        where: { userId: studentProfileId },
+      }),
     );
   }
 
   public async getAverageGradeByGroup(group: number): Promise<number> {
-    return this.findAverageGrade(await this.getGrades({ where: { group } }));
+    return this.findAverageGrade(
+      await this.getProfileGottenGrades({ where: { group } }),
+    );
   }
 
   public async getAverageGradeByFaculty(faculty: string): Promise<number> {
-    return this.findAverageGrade(await this.getGrades({ where: { faculty } }));
+    return this.findAverageGrade(
+      await this.getProfileGottenGrades({ where: { faculty } }),
+    );
   }
 
   public async getAverageGradeByUniversity(
     university: string,
   ): Promise<number> {
     return this.findAverageGrade(
-      await this.getGrades({ where: { university } }),
+      await this.getProfileGottenGrades({ where: { university } }),
     );
   }
 
@@ -90,7 +97,9 @@ export class PerformanceService {
     return flatten.reduce((t, c) => t + c.grade, 0) / flatten.length;
   }
 
-  private getGrades(filter: object): Promise<SelectGradesDBResponse> {
+  private getProfileGottenGrades(
+    filter: object,
+  ): Promise<SelectGradesDBResponse> {
     return this.db.profile.findMany({
       where: {
         NOT: {
@@ -98,6 +107,7 @@ export class PerformanceService {
         },
       },
       select: {
+        userId: true,
         gottenGrades: {
           select: {
             grade: true,
