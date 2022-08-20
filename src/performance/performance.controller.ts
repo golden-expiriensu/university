@@ -1,8 +1,16 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 
-import { CreateGradeDto, EditGradeDto } from './dto';
-import { DeleteGradeDto } from './dto/deleteGrade';
+import {
+    CreateGradeDto,
+    DeleteGradeDto,
+    EditGradeDto,
+    FacultyDto,
+    GroupDto,
+    ProfileAndLessonDto,
+    StudentDto,
+    UniversityDto,
+} from './dto';
 import { PerformanceService } from './performance.service';
 
 @Controller('performance/grade')
@@ -28,42 +36,36 @@ export class PerformanceController {
 
   @Get('get/my')
   public getMyGradesByLesson(
-    @Body() dto: { profileId: number; lesson: number },
+    @Body() dto: ProfileAndLessonDto,
   ): Promise<number[]> {
     return this.service.getProfileGradesByLesson(dto);
   }
 
   @Get('get/my/average-by-lesson')
   public getMyAverageGradeByLesson(
-    @Body() dto: { profileId: number; lesson: number },
+    @Body() dto: ProfileAndLessonDto,
   ): Promise<number> {
     return this.service.getProfileAverageGradeByLesson(dto);
   }
 
   @Get('get/average-by-student')
-  public getAverageGradeByStudent(
-    @Body() dto: { studentProfileId: number },
-  ): Promise<number> {
-    return this.service.getAverageGradeByStudent(dto.studentProfileId);
+  public getAverageGradeByStudent(@Body() dto: StudentDto): Promise<number> {
+    return this.service.getAverageGradeByStudent(dto.profileId);
   }
 
   @Get('get/average-by-group')
-  public getAverageGradeByGroup(
-    @Body() dto: { group: number },
-  ): Promise<number> {
+  public getAverageGradeByGroup(@Body() dto: GroupDto): Promise<number> {
     return this.service.getAverageGradeByGroup(dto.group);
   }
 
   @Get('get/average-by-faculty')
-  public getAverageGradeByFaculty(
-    @Body() dto: { faculty: string },
-  ): Promise<number> {
+  public getAverageGradeByFaculty(@Body() dto: FacultyDto): Promise<number> {
     return this.service.getAverageGradeByFaculty(dto.faculty);
   }
 
   @Get('get/average-by-university')
   public getAverageGradeByUniversity(
-    @Body() dto: { university: string },
+    @Body() dto: UniversityDto,
   ): Promise<number> {
     return this.service.getAverageGradeByUniversity(dto.university);
   }
