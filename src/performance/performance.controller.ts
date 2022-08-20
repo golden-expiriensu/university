@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
-import { OnlyProfileOwnerGuard, OnlySameFacultyGuard } from 'src/profile/guard';
+import { OnlyProfileOwnerGuard, OnlySameFacultyGuard, OnlyTeacherProfile } from 'src/profile/guard';
 
 import {
     CreateGradeDto,
@@ -20,12 +20,14 @@ import { PerformanceService } from './performance.service';
 export class PerformanceController {
   constructor(private service: PerformanceService) {}
 
-  @UseGuards(OnlyGradeCreatorGuard)
+  // TODO: same faculty and group
+  @UseGuards(OnlyTeacherProfile)
   @Post('create')
   public createGrade(@Body() dto: CreateGradeDto): Promise<number> {
     return this.service.createGrade(dto);
   }
 
+  // TODO: same faculty and group ?
   @HttpCode(HttpStatus.ACCEPTED)
   @UseGuards(OnlyGradeCreatorGuard)
   @Patch('edit')
