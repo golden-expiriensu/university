@@ -27,14 +27,14 @@ model User {
 }
 
 model Profile {
-  id           Int           @id @default(autoincrement())
-  user         User          @relation(fields: [userId], references: [id])
-  userId       Int
-  faculty      String
-  university   String
-  group        Int?
-  gottenGrades Performance[] @relation("GottenGrades")
-  madeGrades   Performance[] @relation("MadeGrades")
+  id            Int           @id @default(autoincrement())
+  user          User          @relation(fields: [userId], references: [id])
+  userId        Int
+  faculty       String
+  university    String
+  group         Int?
+  gottenGrades  Performance[] @relation("GottenGrades")
+  createdGrades Performance[] @relation("CreatedGrades")
 
   @@map("profiles")
 }
@@ -43,7 +43,7 @@ model Performance {
   id        Int     @id @default(autoincrement())
   student   Profile @relation(name: "GottenGrades", fields: [studentId], references: [id])
   studentId Int
-  teacher   Profile @relation(name: "MadeGrades", fields: [teacherId], references: [id])
+  teacher   Profile @relation(name: "CreatedGrades", fields: [teacherId], references: [id])
   teacherId Int
   grade     Int
   lesson    Int
