@@ -11,12 +11,12 @@ export class OnlyProfileOwnerGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
 
-    const operatorPID = req.body.operatorPID;
+    const profileId = req.body.operatorPID;
     const userId = req.user.id;
 
     return this.db.profile
       .findUnique({
-        where: { id: Number(operatorPID) },
+        where: { id: Number(profileId) },
         select: { userId: true },
       })
       .then((e) => e.userId == userId)

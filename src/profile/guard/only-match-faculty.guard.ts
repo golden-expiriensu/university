@@ -8,13 +8,16 @@ export class OnlyMatchFacultyGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
 
-    const userId = req.user.id;
+    const profileId = req.body.operatorPID;
     const faculty = req.body.faculty;
     const university = req.body.university;
 
     return this.db.profile
-      .findFirst({ where: { userId: Number(userId), faculty, university } })
-      .then((e) => !!e)
+      .findUnique({
+        where: { id: Number(profileId) },
+        select: { faculty: true, university: true },
+      })
+      .then((e) => e.faculty === faculty && e.university === university)
       .catch(() => false);
   }
 }

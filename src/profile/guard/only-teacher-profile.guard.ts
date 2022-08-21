@@ -11,11 +11,11 @@ export class OnlyTeacherProfileGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
 
-    const teacherId = req.body.operatorPID;
+    const profileId = req.body.operatorPID;
 
     return this.db.profile
       .findUnique({
-        where: { id: Number(teacherId) },
+        where: { id: Number(profileId) },
         select: { group: true },
       })
       .then((e) => !e.group)
