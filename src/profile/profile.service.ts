@@ -8,24 +8,30 @@ import { CreateProfileDto, EditProfileDto } from './dto';
 export class ProfileService {
   constructor(private db: DBAccessService) {}
 
-  public async create(userId: number, dto: CreateProfileDto): Promise<number> {
-    return (
-      await this.db.profile.create({
-        data: {
-          userId,
-          ...dto,
-        },
-      })
-    ).id;
+  public create(userId: number, dto: CreateProfileDto): Promise<Profile> {
+    return this.db.profile.create({
+      data: {
+        userId,
+        ...dto,
+      },
+    });
   }
 
-  public async edit(dto: EditProfileDto): Promise<Profile> {
+  public get(profileId: number): Promise<Profile> {
+    return this.db.profile.findUnique({ where: { id: profileId } });
+  }
+
+  public edit(dto: EditProfileDto): Promise<Profile> {
     const id = dto.operatorPID;
     delete dto.operatorPID;
 
-    return await this.db.profile.update({
+    return this.db.profile.update({
       where: { id },
       data: { ...dto },
     });
+  }
+
+  public delete(profileId: number): Promise<Profile> {
+    return this.db.profile.delete({ where: { id: profileId } });
   }
 }
