@@ -8,5 +8,5 @@ export class EditProfileDto extends PartialType(CreateProfileDto) {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  profileId: number;
+  operatorPID: number;
 }
