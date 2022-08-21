@@ -19,13 +19,13 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private service: UserService) {}
 
-  @Post('create')
+  @Post()
   public async create(@Body() dto: CreateUserDto): Promise<string> {
     return this.service.create(dto);
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
-  @Patch('edit')
+  @Patch()
   @UseGuards(JwtGuard)
   public edit(
     @GetUser('id') id: number,
@@ -34,7 +34,7 @@ export class UserController {
     return this.service.edit(id, dto);
   }
 
-  @Get('me')
+  @Get()
   @UseGuards(JwtGuard)
   public me(@GetUser() user: User): { user: User } {
     delete user.password;

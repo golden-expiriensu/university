@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { GetUser } from 'src/user/decorator';
 
@@ -19,7 +11,7 @@ import { ProfileService } from './profile.service';
 export class ProfileController {
   constructor(private service: ProfileService) {}
 
-  @Post('create')
+  @Post()
   public async create(
     @GetUser('id') userId: number,
     @Body() dto: CreateProfileDto,
@@ -29,7 +21,7 @@ export class ProfileController {
 
   @HttpCode(HttpStatus.ACCEPTED)
   @UseGuards(OnlyProfileOwnerGuard)
-  @Patch('edit')
+  @Patch()
   public async editProfile(@Body() dto: EditProfileDto) {
     return this.service.edit(dto);
   }
