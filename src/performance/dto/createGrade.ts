@@ -5,11 +5,11 @@ export class CreateGradeDto {
     @IsNotEmpty()
     @IsNumber()
     @Type(() => Number)
-    profileId: number;
+    operatorPID: number;
     @IsNotEmpty()
     @IsNumber()
     @Type(() => Number)
-    studentId: number;
+    targetPID: number;
     @IsNotEmpty()
     @IsNumber()
     @Type(() => Number)

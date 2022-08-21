@@ -6,14 +6,26 @@ export class OnlySameFacultyGuard implements CanActivate {
   constructor(private db: DBAccessService) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    try {
+      const req = context.switchToHttp().getRequest();
 
-    const faculty = req.body.faculty;
-    const userId = req.user.id;
+      const operatorPID = Number(req.body.operatorPID);
+      const targetPID = Number(req.body.targetPID);
 
-    return this.db.profile
-      .findFirst({ where: { userId: Number(userId), faculty } })
-      .then((e) => !!e)
-      .catch(() => false);
+      const operator = await this.db.profile.findUnique({
+        where: { id: operatorPID },
+        select: { faculty: true, university: true },
+      });
+      const target = await this.db.profile.findUnique({
+        where: { id: targetPID },
+        select: { faculty: true, university: true },
+      });
+      return (
+        operator.faculty === target.faculty &&
+        operator.university === target.university
+      );
+    } catch (_) {
+      return false;
+    }
   }
 }

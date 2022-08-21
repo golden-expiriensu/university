@@ -5,22 +5,18 @@ import { DBAccessService } from 'src/db-access/db-access.service';
 export class OnlyGradeCreatorGuard implements CanActivate {
   constructor(private db: DBAccessService) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    try {
-      const req = context.switchToHttp().getRequest();
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+    const req = context.switchToHttp().getRequest();
 
-      const userId = req.user.id;
-      const gradeId = req.body.id;
+    const operatorPID = req.body.operatorPID;
+    const gradeId = req.body.gradeId;
 
-      const { teacherId } = await this.db.performance.findUnique({
+    return this.db.performance
+      .findUnique({
         where: { id: Number(gradeId) },
-      });
-
-      return this.db.profile
-        .findUnique({ where: { id: teacherId } })
-        .then((e) => e.userId == userId);
-    } catch (_) {
-      return false;
-    }
+        select: { teacherId: true },
+      })
+      .then((e) => e.teacherId == Number(operatorPID))
+      .catch(() => false);
   }
 }

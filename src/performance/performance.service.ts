@@ -9,13 +9,13 @@ export class PerformanceService {
   constructor(private db: DBAccessService) {}
 
   public async createGrade(dto: CreateGradeDto): Promise<number> {
-    const dtoObj = { ...dto };
-    delete dtoObj.profileId;
     return (
       await this.db.performance.create({
         data: {
-          teacherId: dto.profileId,
-          ...dtoObj,
+          teacherId: dto.operatorPID,
+          studentId: dto.targetPID,
+          lesson: dto.lesson,
+          grade: dto.grade,
         },
       })
     ).id;
@@ -24,10 +24,10 @@ export class PerformanceService {
   public async editGrade(dto: EditGradeDto): Promise<void> {
     await this.db.performance.update({
       where: {
-        id: dto.id,
+        id: dto.gradeId,
       },
       data: (() => {
-        delete dto.id;
+        delete dto.gradeId;
         return dto;
       })(),
     });
@@ -36,7 +36,7 @@ export class PerformanceService {
   public async deleteGrade(dto: DeleteGradeDto): Promise<void> {
     await this.db.performance.delete({
       where: {
-        id: dto.id,
+        id: dto.gradeId,
       },
     });
   }
@@ -75,23 +75,24 @@ export class PerformanceService {
     );
   }
 
-  public async getAverageGradeByGroup(group: number): Promise<number> {
-    return this.findAverageGrade(
-      await this.getProfileGottenGrades({ where: { group } }),
-    );
-  }
-
-  public async getAverageGradeByFaculty(faculty: string): Promise<number> {
-    return this.findAverageGrade(
-      await this.getProfileGottenGrades({ where: { faculty } }),
-    );
-  }
-
-  public async getAverageGradeByUniversity(
+  public async getAverageGradeByGroup(
+    group: number,
+    faculty: string,
     university: string,
   ): Promise<number> {
     return this.findAverageGrade(
-      await this.getProfileGottenGrades({ where: { university } }),
+      await this.getProfileGottenGrades({
+        where: { group, faculty, university },
+      }),
+    );
+  }
+
+  public async getAverageGradeByFaculty(
+    faculty: string,
+    university: string,
+  ): Promise<number> {
+    return this.findAverageGrade(
+      await this.getProfileGottenGrades({ where: { faculty, university } }),
     );
   }
 

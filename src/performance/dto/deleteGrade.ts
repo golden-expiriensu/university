@@ -5,5 +5,5 @@ export class DeleteGradeDto {
     @IsNotEmpty()
     @IsNumber()
     @Type(() => Number)
-    id: number;
+    gradeId: number;
 }

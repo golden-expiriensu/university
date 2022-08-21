@@ -2,11 +2,18 @@ import { IntersectionType } from '@nestjs/mapped-types';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-class ProfileId {
+class OperatorProfileId {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  profileId: number;
+  operatorPID: number;
+}
+
+class TargetProfileId {
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  targetPID: number;
 }
 
 class Lesson {
@@ -35,15 +42,12 @@ class University {
   university: string;
 }
 
-export class ProfileIdAndLessonDto extends IntersectionType(
-  ProfileId,
-  Lesson,
-) {}
+export class GetMyDto extends IntersectionType(OperatorProfileId, Lesson) {}
 
-export class ProfileIdDto extends ProfileId {}
+export class GetStudentDto extends TargetProfileId {}
 
-export class GroupDto extends Group {}
+export class GetGroupDto extends IntersectionType(Group, Faculty, University) {}
 
-export class FacultyDto extends Faculty {}
+export class GetFacultyDto extends IntersectionType(Faculty, University) {}
 
-export class UniversityDto extends University {}
+export class GetUniversityDto extends University {}
