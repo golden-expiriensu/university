@@ -3,7 +3,6 @@ import { Profile } from '@prisma/client';
 import { DBAccessService } from 'src/db-access/db-access.service';
 
 import { CreateProfileDto, EditProfileDto } from './dto';
-import { NotProfileOwnerException, ProfileNotFoundException } from './error';
 
 @Injectable()
 export class ProfileService {
@@ -20,16 +19,9 @@ export class ProfileService {
     ).id;
   }
 
-  public async edit(userId: number, dto: EditProfileDto): Promise<Profile> {
-    const user = await this.db.profile.findUnique({
-      where: { id: dto.profileId },
-      select: { userId: true },
-    });
-    if (!user) throw new ProfileNotFoundException();
-    if (user.userId !== userId) throw new NotProfileOwnerException();
-
-    const id = dto.profileId;
-    delete dto.profileId;
+  public async edit(dto: EditProfileDto): Promise<Profile> {
+    const id = dto.operatorPID;
+    delete dto.operatorPID;
 
     return await this.db.profile.update({
       where: { id },

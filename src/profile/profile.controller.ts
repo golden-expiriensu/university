@@ -3,6 +3,7 @@ import { JwtGuard } from 'src/auth/guard';
 import { GetUser } from 'src/user/decorator';
 
 import { CreateProfileDto, EditProfileDto } from './dto';
+import { OnlyProfileOwnerGuard } from './guard';
 import { ProfileService } from './profile.service';
 
 @Controller('profile')
@@ -19,11 +20,9 @@ export class ProfileController {
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
+  @UseGuards(OnlyProfileOwnerGuard)
   @Patch('edit')
-  public async editProfile(
-    @GetUser('id') userId: number,
-    @Body() dto: EditProfileDto,
-  ) {
-    return this.service.edit(userId, dto);
+  public async editProfile(@Body() dto: EditProfileDto) {
+    return this.service.edit(dto);
   }
 }
