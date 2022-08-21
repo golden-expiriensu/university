@@ -19,7 +19,14 @@ import {
   OnlyTeacherProfileGuard,
 } from 'src/profile/guard';
 
-import { CreateGradeDto, EditGradeDto, GetFacultyDto, GetGroupDto, GetMyDto, GetStudentDto } from './dto';
+import {
+  CreateGradeDto,
+  EditGradeDto,
+  GetFacultyDto,
+  GetGroupDto,
+  GetMyDto,
+  GetStudentDto,
+} from './dto';
 import { OnlyGradeCreatorGuard } from './guard';
 import { PerformanceService } from './performance.service';
 

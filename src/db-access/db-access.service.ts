@@ -19,7 +19,7 @@ export class DBAccessService extends PrismaClient {
     await this.$transaction([
       this.profile.deleteMany(),
       this.user.deleteMany(),
-    ])
+    ]);
   }
 
   public static errorCodes = () => {
