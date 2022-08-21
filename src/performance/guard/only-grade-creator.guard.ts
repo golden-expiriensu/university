@@ -13,7 +13,7 @@ export class OnlyGradeCreatorGuard implements CanActivate {
       const gradeId = req.body.id;
 
       const { teacherId } = await this.db.performance.findUnique({
-        where: { id: gradeId },
+        where: { id: Number(gradeId) },
       });
 
       return this.db.profile

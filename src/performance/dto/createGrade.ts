@@ -5,7 +5,7 @@ export class CreateGradeDto {
     @IsNotEmpty()
     @IsNumber()
     @Type(() => Number)
-    teacherId: number;
+    profileId: number;
     @IsNotEmpty()
     @IsNumber()
     @Type(() => Number)

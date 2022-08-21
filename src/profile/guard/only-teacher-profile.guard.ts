@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { DBAccessService } from 'src/db-access/db-access.service';
 
 @Injectable()
-export class OnlyTeacherProfile implements CanActivate {
+export class OnlyTeacherProfileGuard implements CanActivate {
   constructor(private db: DBAccessService) {}
 
   public canActivate(
@@ -11,7 +11,7 @@ export class OnlyTeacherProfile implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
 
-    const teacherId = req.body.teacherId;
+    const teacherId = req.body.profileId;
     const userId = req.user.id;
 
     return this.db.profile

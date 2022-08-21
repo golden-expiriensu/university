@@ -9,9 +9,14 @@ export class PerformanceService {
   constructor(private db: DBAccessService) {}
 
   public async createGrade(dto: CreateGradeDto): Promise<number> {
+    const dtoObj = { ...dto };
+    delete dtoObj.profileId;
     return (
       await this.db.performance.create({
-        data: { ...dto },
+        data: {
+          teacherId: dto.profileId,
+          ...dtoObj,
+        },
       })
     ).id;
   }
