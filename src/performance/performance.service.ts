@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DBAccessService } from 'src/db-access/db-access.service';
 
-import { CreateGradeDto, DeleteGradeDto, EditGradeDto } from './dto';
+import { CreateGradeDto, EditGradeDto } from './dto';
 import { SelectGradesDBResponse } from './types';
 
 @Injectable()
@@ -21,24 +21,15 @@ export class PerformanceService {
     ).id;
   }
 
-  public async editGrade(dto: EditGradeDto): Promise<void> {
+  public async editGrade(id: number, dto: EditGradeDto): Promise<void> {
     await this.db.performance.update({
-      where: {
-        id: dto.gradeId,
-      },
-      data: (() => {
-        delete dto.gradeId;
-        return dto;
-      })(),
+      where: { id },
+      data: dto,
     });
   }
 
-  public async deleteGrade(dto: DeleteGradeDto): Promise<void> {
-    await this.db.performance.delete({
-      where: {
-        id: dto.gradeId,
-      },
-    });
+  public async deleteGrade(id: number): Promise<void> {
+    await this.db.performance.delete({ where: { id } });
   }
 
   public async getProfileGradesByLesson(
