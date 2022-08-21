@@ -14,7 +14,7 @@ export class OnlyMatchFacultyGuard implements CanActivate {
 
     return this.db.profile
       .findUnique({
-        where: { id: Number(profileId) },
+        where: { id: +profileId },
         select: { faculty: true, university: true },
       })
       .then((e) => e.faculty === faculty && e.university === university)

@@ -15,7 +15,7 @@ export class OnlyTeacherProfileGuard implements CanActivate {
 
     return this.db.profile
       .findUnique({
-        where: { id: Number(profileId) },
+        where: { id: +profileId },
         select: { group: true },
       })
       .then((e) => !e.group)

@@ -15,10 +15,10 @@ export class OnlyProfileOwnerGuard implements CanActivate {
 
     return this.db.profile
       .findUnique({
-        where: { id: Number(profileId) },
+        where: { id: +profileId },
         select: { userId: true },
       })
-      .then((e) => e.userId == Number(getUser(context).id))
+      .then((e) => e.userId == +getUser(context).id)
       .catch(() => false);
   }
 }

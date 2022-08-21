@@ -13,10 +13,10 @@ export class OnlyGradeCreatorGuard implements CanActivate {
 
     return this.db.performance
       .findUnique({
-        where: { id: Number(gradeId) },
+        where: { id: +gradeId },
         select: { teacherId: true },
       })
-      .then((e) => e.teacherId == Number(operatorPID))
+      .then((e) => e.teacherId == +operatorPID)
       .catch(() => false);
   }
 }
