@@ -32,20 +32,20 @@ export class ProfileController {
 
   @UseGuards(OnlyProfileOwnerGuard)
   @Get()
-  public getProfile(@Body() dto: ProfileIdDto): Promise<Profile> {
+  public get(@Body() dto: ProfileIdDto): Promise<Profile> {
     return this.service.get(dto.operatorPID);
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
   @UseGuards(OnlyProfileOwnerGuard)
   @Patch()
-  public editProfile(@Body() dto: EditProfileDto): Promise<Profile> {
+  public edit(@Body() dto: EditProfileDto): Promise<Profile> {
     return this.service.edit(dto);
   }
 
   @UseGuards(OnlyProfileOwnerGuard)
   @Delete()
-  public deleteProfile(@Body() dto: ProfileIdDto): Promise<Profile> {
+  public delete(@Body() dto: ProfileIdDto): Promise<Profile> {
     return this.service.delete(dto.operatorPID);
   }
 }
