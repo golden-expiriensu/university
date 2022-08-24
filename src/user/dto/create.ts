@@ -1,12 +1,5 @@
 import { Type } from 'class-transformer';
-import {
-  IsDate,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsPhoneNumber,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 export enum Sex {
   Male = 'MALE',
@@ -29,7 +22,7 @@ export class CreateUserDto {
   @IsOptional()
   @Type(() => Date)
   @IsDate()
-  dateOfBirth?: string;
+  dateOfBirth?: string | Date;
   @IsOptional()
   @IsString()
   sex?: Sex;
