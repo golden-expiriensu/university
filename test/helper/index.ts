@@ -1,4 +1,4 @@
-export * from './app';
 export * from './auth';
-export * from './profile';
-export * from './user';
+export * from './path/api';
+export * from './setups/profile';
+export * from './setups/user';
