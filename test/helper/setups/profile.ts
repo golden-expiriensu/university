@@ -3,17 +3,14 @@ export const profile = {
     u1f1: {
       university: 'university_1',
       faculty: 'faculty_1',
-      group: null,
     },
     u1f2: {
       university: 'university_1',
       faculty: 'faculty_2',
-      group: null,
     },
     u2f1: {
       university: 'university_2',
       faculty: 'faculty_1',
-      group: null,
     },
   },
   student: {
