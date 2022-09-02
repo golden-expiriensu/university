@@ -18,7 +18,7 @@
     "db:test:docker": "dotenv -e test.env -- docker-compose rm -fsv test-db && dotenv -e test.env -- docker-compose up -d test-db",
     "db:test:prisma": "dotenv -e test.env -- prisma migrate deploy",
     "db:test:restart": "pnpm db:test:docker && pnpm db:test:prisma",
-    "test:watch": "pnpm db:test:restart && dotenv -e test.env -- jest --watch",
+    "test:watch": "dotenv -e test.env -- jest --watch",
     "test:cov": "pnpm test:db:restart && dotenv -e test.env -- jest --coverage",
     "test:e2e": "pnpm test:db:restart && dotenv -e test.env -- jest --config ./test/jest-e2e.json",
     "prebuild": "rimraf dist",

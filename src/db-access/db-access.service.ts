@@ -14,15 +14,6 @@ export class DBAccessService extends PrismaClient {
     });
   }
 
-  public async clear(): Promise<void> {
-    if (process.env.DEVELOPMENT) {
-      await this.$transaction([
-        this.profile.deleteMany(),
-        this.user.deleteMany(),
-      ]);
-    }
-  }
-
   public static errorCodes = () => {
     return { duplicateField: 'P2002' };
   };
