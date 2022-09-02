@@ -17,6 +17,7 @@ const prismaMock = prisma as unknown as DeepMockProxy<PrismaClient>;
 
 export const mockDBAcceessService = {
   user: prismaMock.user,
+  profile: prismaMock.profile,
   errorCodes: () => {
     return { duplicateField: 'P2002' };
   },

@@ -3,9 +3,8 @@ import { AppModule } from 'src/app.module';
 import { DBAccessService } from 'src/db-access/db-access.service';
 import { LoginIsOccupied } from 'src/user/error';
 import { UserService } from 'src/user/user.service';
-import { userIdByName } from 'test/helper/userIdByName';
 
-import { user } from '../helper';
+import { mockDBAcceessService, user } from '../helper';
 
 describe('UserService tests', () => {
   let service: UserService;
@@ -14,22 +13,30 @@ describe('UserService tests', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(DBAccessService)
+      .useValue(mockDBAcceessService)
+      .compile();
 
     service = module.get<UserService>(UserService);
     db = module.get<DBAccessService>(DBAccessService);
+  });
 
-    await db.clear();
+  beforeEach(async () => {
+    // @ts-ignore
+    mockDBAcceessService.user.create.mockResolvedValue({
+      id: 1,
+      ...user.alice,
+    });
   });
 
   describe('Create', () => {
     it('1: Should create user', async () => {
-      expect(await service.create({ ...user.alice })).toEqual(
-        expect.any(String),
-      );
+      expect(await service.create(user.alice)).toEqual(expect.any(String));
     });
 
     it('2: Should forbid to create user with the same login', async () => {
+      mockDBAcceessService.user.create.mockRejectedValue(new LoginIsOccupied());
       await expect(
         service.create({ email: user.alice.email, password: '' }),
       ).rejects.toThrowError(LoginIsOccupied);
@@ -54,8 +61,17 @@ describe('UserService tests', () => {
 
   describe('Edit', () => {
     it('1: Should forbid to change login to occupied', async () => {
-      await service.create({ ...user.bob });
-      const id = await userIdByName(db, user.alice.name);
+      // @ts-ignore
+      mockDBAcceessService.user.create.mockResolvedValueOnce({
+        id: 2,
+        ...user.bob,
+      });
+
+      await service.create(user.bob);
+
+      const id = 2
+
+      mockDBAcceessService.user.update.mockRejectedValue(new LoginIsOccupied());
 
       await expect(
         service.edit(id, { name: user.bob.name }),
@@ -67,7 +83,7 @@ describe('UserService tests', () => {
     });
 
     it('2: Should successfully edit a user', async () => {
-      const id = await userIdByName(db, user.alice.name);
+      const id = 1;
 
       await service.edit(id, {
         name: 'newName',
