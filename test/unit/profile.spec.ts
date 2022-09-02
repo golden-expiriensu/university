@@ -38,25 +38,25 @@ describe('ProfileService tests', () => {
   it('1: Should successfully create profiles', async () => {
     // @ts-ignore
     mockDBAcceessService.profile.create.mockResolvedValueOnce({
-      ...{ ...profile.teacher.u1f1 },
+      ...profile.teacher.u1f1,
       id: 1,
       userId,
       group: null,
     });
     // @ts-ignore
     mockDBAcceessService.profile.create.mockResolvedValueOnce({
-      ...{ ...profile.student.u1f1g1 },
+      ...profile.student.u1f1g1,
       id: 2,
       userId,
     });
 
     const [t, s] = await Promise.all([
-      service.create(userId, { ...profile.teacher.u1f1 }),
-      service.create(userId, { ...profile.student.u1f1g1 }),
+      service.create(userId, profile.teacher.u1f1),
+      service.create(userId, profile.student.u1f1g1),
     ]);
 
-    expect(t).toEqual(expect.objectContaining({ ...profile.teacher.u1f1 }));
-    expect(s).toEqual(expect.objectContaining({ ...profile.student.u1f1g1 }));
+    expect(t).toEqual(expect.objectContaining(profile.teacher.u1f1));
+    expect(s).toEqual(expect.objectContaining(profile.student.u1f1g1));
 
     profileId = { teacher: t.id, student: s.id };
   });
@@ -64,34 +64,30 @@ describe('ProfileService tests', () => {
   it('2: Should get correct data of profile', async () => {
     // @ts-ignore
     mockDBAcceessService.profile.findUnique.mockResolvedValueOnce({
-      ...{ ...profile.teacher.u1f1 },
+      ...profile.teacher.u1f1,
       id: 1,
       userId,
       group: null,
     });
     // @ts-ignore
     mockDBAcceessService.profile.findUnique.mockResolvedValueOnce({
-      ...{ ...profile.student.u1f1g1 },
+      ...profile.student.u1f1g1,
       id: 2,
       userId,
     });
 
     expect(await service.get(profileId.teacher)).toEqual(
-      expect.objectContaining({
-        ...profile.teacher.u1f1,
-      }),
+      expect.objectContaining(profile.teacher.u1f1),
     );
     expect(await service.get(profileId.student)).toEqual(
-      expect.objectContaining({
-        ...profile.student.u1f1g1,
-      }),
+      expect.objectContaining(profile.student.u1f1g1),
     );
   });
 
   it('3: Should update profile', async () => {
     // @ts-ignore
     mockDBAcceessService.profile.update.mockResolvedValueOnce({
-      ...{ ...profile.teacher.u2f1 },
+      ...profile.teacher.u2f1,
       id: 1,
       userId,
       group: null,
@@ -101,19 +97,19 @@ describe('ProfileService tests', () => {
         operatorPID: profileId.student,
         ...profile.teacher.u2f1,
       }),
-    ).toEqual(expect.objectContaining({ ...profile.teacher.u2f1 }));
+    ).toEqual(expect.objectContaining(profile.teacher.u2f1));
   });
 
   it('4: Should delete profile', async () => {
     // @ts-ignore
     mockDBAcceessService.profile.delete.mockResolvedValueOnce({
-      ...{ ...profile.teacher.u1f1 },
+      ...profile.teacher.u1f1,
       id: 1,
       userId,
       group: null,
     });
     expect(await service.delete(profileId.teacher)).toEqual(
-      expect.objectContaining({ ...profile.teacher.u1f1 }),
+      expect.objectContaining(profile.teacher.u1f1),
     );
     expect(await db.profile.findUnique({ where: { id: profileId.teacher } }))
       .toBeNull;
